@@ -1,0 +1,8 @@
+openai
+llama_index
+pyvis
+wikipedia
+transformers
+torch
+fastembed
+sentence-transformers
