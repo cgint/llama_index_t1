@@ -6,3 +6,8 @@ transformers
 torch
 fastembed
 sentence-transformers
+pandas
+requests
+
+# unstructured used in UnstructuredURLLoader
+unstructured
