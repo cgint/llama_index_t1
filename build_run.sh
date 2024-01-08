@@ -7,4 +7,8 @@ IMAGE_NAME="llama_sim_t1"
 docker build -t $IMAGE_NAME .
 
 # Run the Docker container interactively and remove it after it stops
-docker run -it --rm -v "$(pwd)/data:/data" $IMAGE_NAME
+ # --gpus all \
+docker run -it --rm \
+ -v "$(pwd)/data:/data" \
+ -v "$(pwd)/data_root_nltk:/root/nltk_data" \
+ $IMAGE_NAME
