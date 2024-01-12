@@ -11,4 +11,5 @@ docker build -t $IMAGE_NAME .
 docker run -it --rm \
  -v "$(pwd)/data:/data" \
  -v "$(pwd)/data_root_nltk:/root/nltk_data" \
+ -e TOGETHER_AI_KEY \
  $IMAGE_NAME
