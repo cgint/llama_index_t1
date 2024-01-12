@@ -6,6 +6,8 @@ IMAGE_NAME="llama_sim_t1"
 # Build the Docker image
 docker build -t $IMAGE_NAME .
 
+mkdir -p data/fastembed_cache
+
 # Run the Docker container interactively and remove it after it stops
  # --gpus all \
 docker run -it --rm \
