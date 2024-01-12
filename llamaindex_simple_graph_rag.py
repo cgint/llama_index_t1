@@ -211,17 +211,16 @@ def store_data(questions_data, questions_data_out_file):
     questions_data_df = pd.DataFrame(questions_data, columns=["context", "mode", "question", "answer"])
     questions_data_df.to_csv(questions_data_out_file, index=False)
 
-from llama_index import set_global_service_context
+from llama_index import set_global_service_context, set_global_handler
 
 # define LLM
 #from llama_index.llms import OpenAI
 #os.environ["OPENAI_API_KEY"] = "dummy" # "sk-..."
 #os.environ["OPENAI_API_BASE"] = "http://host.docker.internal:1234"
 #llm = OpenAI(temperature=0, model="gpt-3.5-turbo") # gpt-3.5-turbo-1106, gpt-4-1106-preview
-from llama_index.llms import Ollama
-
-llm_model = "neural-chat" # "openchat" # "neural-chat" # "gpt-3.5-turbo-1106", "gpt-4-1106-preview"
-run_scenario = "no-chap-per-meldung" # "no-chap-per-meldung"
+set_global_handler("simple")
+llm_model = "mixtral-together-11" # "openchat" # "neural-chat" # "gpt-3.5-turbo-1106", "gpt-4-1106-preview"
+run_scenario = "no-chap-per-meldung" # "chap-per-meldung"
 run_identifier = f"{llm_model}_{run_scenario}"
 urls=[
     'https://mostbauer.com/Poscher',
@@ -230,10 +229,26 @@ urls=[
     'https://mostbauer.com/Rathwieser',
     'https://mostbauer.com/Willnauer'
     ]
+from llama_index.llms import OpenAILike
+api_base_url = "https://api.together.xyz"
+openai_model = "mistralai/Mixtral-8x7B-Instruct-v0.1"
+print(f"About to instanciate LLM {openai_model} on {api_base_url} using Together.ai ...")
+llm = OpenAILike(
+    model=openai_model,
+    api_base=api_base_url,
+    api_key=os.environ["TOGETHER_AI_KEY"],
+    is_chat_model=True,
+    is_function_calling_model=True,
+    reuse_client=True, # When doing anything with large volumes of async API calls, setting this to false can improve stability.",
+    max_retries=10,
+    timeout=120,
+    temperature=0.1
+)
 
-llm_base_url = "http://host.docker.internal:11435"
-print(f"About to instanciate LLM {llm_model} on {llm_base_url} ...")
-llm = Ollama(model=llm_model, base_url=llm_base_url, request_timeout=900, temperature=0)
+# from llama_index.llms import Ollama
+# api_base_url = "http://host.docker.internal:11434"
+# print(f"About to instanciate LLM {llm_model} on {api_base_url} using Ollama ...")
+# llm = Ollama(model=llm_model, base_url=api_base_url, request_timeout=900, temperature=0)
 
 # set global service context
 from llama_index.embeddings import FastEmbedEmbedding
@@ -289,22 +304,30 @@ def load_documents(urls):
 # simply download urls to array of strings using simple python url fetching
   import requests
   from pathlib import Path
+  from llama_index.readers.schema.base import Document
+  from llama_index.node_parser.relational import MarkdownElementNodeParser
   MarkdownReader = download_loader("MarkdownReader")
   documents = []
   mdLoader = MarkdownReader()
   for dlUrl in urls:
       content = requests.get(dlUrl + "?format=markdown").text
+      numLines = len(content.split("\n"))
       # extract first healine starting with # ending with newline
       firstHeadStart = content.find("#")
       firstHeadline = content[firstHeadStart:content.find("\n", firstHeadStart)].replace("#", "").strip()
-      extra_info = {"Mostbauer Eintrag": firstHeadline} # "url": dlUrl
-      print(f"Fetching as document. Entry {extra_info} ...")
-      documents.extend(mdLoader.load_data(
-         file=Path('.'), 
-         content=content,
-         extra_info=extra_info
-        )
-      )
+      extra_info = {"Mostbauer Eintrag": firstHeadline} # "url": dlUrl, "Mostbauer Eintrag": firstHeadline
+      parser = MarkdownElementNodeParser()
+      elements = parser.extract_elements(text=content)
+      print(f"Fetching as document. Entry {firstHeadline} produced {len(elements)} elements from {numLines} lines ...")
+      for element in elements:
+        documents.append(Document(text=element.element, extra_info=extra_info))
+      # documents.append(Document(text=content, extra_info=extra_info))
+      # documents.extend(mdLoader.load_data(
+      #    file=Path('.'), 
+      #    content=content,
+      #    extra_info=extra_info
+      #   )
+      # )
 
   # save documents to disc
   import json
@@ -323,36 +346,6 @@ vector_storage_dir = f'/data/storage_vector_{run_identifier}'
 if not os.path.exists(kg_index_storage_dir) or not os.path.exists(vector_storage_dir):
   documents = load_documents(urls)
 
-if not os.path.exists(kg_index_storage_dir):
-  print(f"About to build graph-index over {len(documents)} document(s) ...")
-  build_start = time.time()
-  
-  kg_index = KnowledgeGraphIndex.from_documents(
-      documents,
-      storage_context=storage_context,
-      service_context=service_context,
-      max_triplets_per_chunk=10,
-      #max_object_length=4096,
-      show_progress=True,
-      include_embeddings=True
-  )
-  build_end = time.time()
-  print(f"Building graph-index took {build_end-build_start} seconds.")
-  print(f"Storing graph-index to {kg_index_storage_dir} ...")
-  kg_index.storage_context.persist(persist_dir=kg_index_storage_dir)
-  # Assuming kg_index is a NetworkX graph
-  from pyvis.network import Network
-  net = Network(notebook=False, directed=True)
-  net.from_nx(kg_index.get_networkx_graph())
-  net.save_graph(f"/data/example_{run_identifier}.html")
-else:
-  print(f"Loading graph-index from storage from {kg_index_storage_dir} ...")
-  storage_context = StorageContext.from_defaults(persist_dir=kg_index_storage_dir)
-  kg_index = load_index_from_storage(
-      storage_context=storage_context,
-      service_context=service_context
-  )
-
 if not os.path.exists(vector_storage_dir):
   print(f"About to build vector-index over {len(documents)} document(s) ...")
   vector_index = VectorStoreIndex.from_documents(
@@ -369,6 +362,36 @@ else:
     storage_context=storage_context_vector
   )
 
+if not os.path.exists(kg_index_storage_dir):
+  print(f"About to build graph-index over {len(documents)} document(s) ...")
+  build_start = time.time()
+  
+  kg_index = KnowledgeGraphIndex.from_documents(
+      documents,
+      storage_context=storage_context,
+      service_context=service_context,
+      max_triplets_per_chunk=20,
+      #max_object_length=4096,
+      show_progress=True,
+      include_embeddings=True
+  )
+  build_end = time.time()
+  print(f"Building graph-index took {build_end-build_start} seconds.")
+  print(f"Storing graph-index to {kg_index_storage_dir} ...")
+  kg_index.storage_context.persist(persist_dir=kg_index_storage_dir)
+  # Assuming kg_index is a NetworkX graph
+  from pyvis.network import Network
+  net = Network(height="900px", notebook=False, directed=True)
+  net.from_nx(kg_index.get_networkx_graph())
+  net.save_graph(f"/data/example_{run_identifier}.html")
+else:
+  print(f"Loading graph-index from storage from {kg_index_storage_dir} ...")
+  storage_context = StorageContext.from_defaults(persist_dir=kg_index_storage_dir)
+  kg_index = load_index_from_storage(
+      storage_context=storage_context,
+      service_context=service_context
+  )
+
 """## 🧠 Graph RAG
 
 ### KG_Index as **Hybrid Query Engine**
@@ -382,7 +405,10 @@ print("====================================")
 kg_index_query_engine = kg_index.as_query_engine(
     retriever_mode="hybrid",
     verbose=be_verbose,
-    response_mode="tree_summarize",
+    response_mode="simple_summarize", # https://docs.llamaindex.ai/en/stable/module_guides/deploying/query_engine/response_modes.html
+    #include_text=True,
+    #similarity_top_k=5,
+    graph_store_query_depth = 4,
 )
 
 the_queries = [
@@ -413,12 +439,12 @@ print("====================================")
 from llama_index.tools.query_engine import QueryEngineTool
 keyword_tool = QueryEngineTool.from_defaults(
     query_engine=kg_index_query_engine,
-    description="Useful for answering questions about this essay",
+    description="Useful for answering questions about relationships",
 )
 
 vector_tool = QueryEngineTool.from_defaults(
     query_engine=vector_rag_query_engine,
-    description="Useful for answering questions about this essay",
+    description="Useful for answering questions about semantic similarity",
 )
 
 from llama_index.query_engine.router_query_engine import RouterQueryEngine
