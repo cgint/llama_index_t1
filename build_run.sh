@@ -17,6 +17,9 @@ then
     echo "       ./build_run.sh ollama codeup ignore AY-yahoo-content-no_sentiment-40"
     exit 1
 fi
+
+mkdir -p data/fastembed_cache
+
 # Build the Docker image and run if successful
 dbuild.sh -t $IMAGE_NAME . && time docker run -it --rm \
     -v "$(pwd)/data:/data" \
@@ -27,6 +30,5 @@ dbuild.sh -t $IMAGE_NAME . && time docker run -it --rm \
     -e CONF_MODEL="$MODEL" \
     -e CONF_AI_MODEL="$AI_MODEL" \
     -e CONF_IDENT="$IDENT" \
- $IMAGE_NAME
 
 sudo chown `whoami` data/*
