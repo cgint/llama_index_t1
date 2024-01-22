@@ -267,8 +267,6 @@ def run_for_config(embed_model_name, llm_engine, llm_model, openai_model, run_id
     print("====================================")
     print(f"     {context}")
     print("====================================")
-    from llama_index.query_engine.multistep_query_engine import MultiStepQueryEngine
-    from llama_index.indices.query.query_transform.base import StepDecomposeQueryTransform
     multistep_router_query_engine = MultiStepQueryEngine(
         router_query_engine_tools,
         query_transform=StepDecomposeQueryTransform(llm=llm, verbose=be_verbose),
