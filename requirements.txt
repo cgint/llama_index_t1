@@ -21,3 +21,5 @@ numpy
 beautifulsoup4
 
 # arize-phoenix
+
+guidance

@@ -53,9 +53,8 @@ the_queries_stocknews = [
 ]
 the_queries_zipcode = [
     "How to use method 'run_for_config' ? Which parameters does it take ?",
-    "Describe in short what the whole project is about. Do it step by step.",
-    "What are the libraries that are used in this project ?",
-    "Please analyse the code from a software engineering perspective. What are flaws in the design ? What is solved well ?",
+    "What does the method 'create_vector' specifically do ? Explain step by step. Focus on a higher level of semantic rather than syntax and line by line description.",
+    "Describe in short what the whole project is about. Do it step by step. Focus on an overview of the whole project.",
 ]
 
 def run_for_config(embed_model_name, llm_engine, llm_model, openai_model, run_identifier, be_verbose=False):
@@ -113,12 +112,35 @@ def run_for_config(embed_model_name, llm_engine, llm_model, openai_model, run_id
 
     store_data(questions_data, questions_data_out_file)
 
-    from llama_index.query_engine.multistep_query_engine import MultiStepQueryEngine
-    from llama_index.indices.query.query_transform.base import StepDecomposeQueryTransform
+    context = "SubQuestion Query Engine with Vector RAG Tool"
+    print("====================================")
+    print(f"     {context}")
+    print("====================================")
+    from llama_index.tools import QueryEngineTool
+    from llama_index.query_engine import SubQuestionQueryEngine
+    from llama_index.question_gen.guidance_generator import GuidanceQuestionGenerator
+    question_gen = GuidanceQuestionGenerator.from_defaults(guidance_llm=llm, verbose=True)
+
+    sub_question_query_engine = SubQuestionQueryEngine.from_defaults(
+        query_engine_tools=[
+            QueryEngineTool.from_defaults(
+                query_engine=vector_rag_query_engine,
+                description="Source code questions are about."
+            )
+        ],
+        question_gen=question_gen
+    )
+
+    questions_data.extend(process_queries_with_query_engine(sub_question_query_engine, context, the_queries))
+
+    store_data(questions_data, questions_data_out_file)
+
     context = "Vector RAG MultiStep Query Engine"
     print("====================================")
     print(f"     {context}")
     print("====================================")
+    from llama_index.query_engine.multistep_query_engine import MultiStepQueryEngine
+    from llama_index.indices.query.query_transform.base import StepDecomposeQueryTransform
     multistep_query_engine = MultiStepQueryEngine(
         vector_rag_query_engine,
         query_transform=StepDecomposeQueryTransform(llm=llm, verbose=be_verbose),
@@ -178,12 +200,12 @@ def run_for_config(embed_model_name, llm_engine, llm_model, openai_model, run_id
     from llama_index.tools.query_engine import QueryEngineTool
     keyword_tool = QueryEngineTool.from_defaults(
         query_engine=kg_index_query_engine,
-        description="Useful for answering questions about relationships",
+        description="Useful for answering questions about relationships"
     )
 
     vector_tool = QueryEngineTool.from_defaults(
         query_engine=vector_rag_query_engine,
-        description="Useful for answering questions about semantic similarity",
+        description="Useful for answering questions about semantic similarity"
     )
 
     from llama_index.query_engine.router_query_engine import RouterQueryEngine
@@ -212,7 +234,7 @@ def run_for_config(embed_model_name, llm_engine, llm_model, openai_model, run_id
         summary_template=PromptTemplate(TREE_SUMMARIZE_PROMPT_TMPL)
     )
 
-    tool_query_engine = RouterQueryEngine(
+    router_query_engine_tools = RouterQueryEngine(
         selector=LLMMultiSelector.from_defaults(),
         query_engine_tools=[
             keyword_tool,
@@ -221,7 +243,39 @@ def run_for_config(embed_model_name, llm_engine, llm_model, openai_model, run_id
         summarizer=tree_summarize,
     )
 
-    questions_data.extend(process_queries_with_query_engine(tool_query_engine, context, the_queries))
+    questions_data.extend(process_queries_with_query_engine(router_query_engine_tools, context, the_queries))
+
+    store_data(questions_data, questions_data_out_file)
+
+    context = "SubQuestion Query Engine with tools: KG_Index as Query Engine, Vector RAG Query Engine"
+    print("====================================")
+    print(f"     {context}")
+    print("====================================")
+    sub_question_query_engine_tools = SubQuestionQueryEngine.from_defaults(
+        query_engine_tools=[
+            keyword_tool,
+            vector_tool,
+        ],
+        question_gen=question_gen
+    )
+
+    questions_data.extend(process_queries_with_query_engine(sub_question_query_engine_tools, context, the_queries))
+
+    store_data(questions_data, questions_data_out_file)
+
+    context = "MultiStep Query Engine based on RouterQueryEngine with tools vector and graph"
+    print("====================================")
+    print(f"     {context}")
+    print("====================================")
+    from llama_index.query_engine.multistep_query_engine import MultiStepQueryEngine
+    from llama_index.indices.query.query_transform.base import StepDecomposeQueryTransform
+    multistep_router_query_engine = MultiStepQueryEngine(
+        router_query_engine_tools,
+        query_transform=StepDecomposeQueryTransform(llm=llm, verbose=be_verbose),
+        index_summary = "Used to answer questions about the code"
+    )
+
+    questions_data.extend(process_queries_with_query_engine(multistep_router_query_engine, context, the_queries))
 
     store_data(questions_data, questions_data_out_file)
 
