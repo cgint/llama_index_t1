@@ -1,5 +1,7 @@
 # Use an official Python runtime as a parent image
-FROM python:3.10-slim
+FROM python:3.11-slim
+
+RUN --mount=type=cache,target=/var/cache/apt apt-get update && apt-get upgrade -y && apt-get install -y build-essential && apt-get clean all 
 
 RUN --mount=type=cache,target=/root/.cache/pip pip install --upgrade pip
 
@@ -13,4 +15,5 @@ COPY requirements.txt .
 RUN --mount=type=cache,target=/root/.cache/pip pip install -r requirements.txt
 
 COPY llamaindex_simple_graph_rag.py app.py
+COPY lib/ lib
 CMD ["python", "app.py"]

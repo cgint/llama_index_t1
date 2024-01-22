@@ -11,3 +11,13 @@ requests
 
 # unstructured used in UnstructuredURLLoader
 unstructured
+
+# yahoo news - fetch_rss_feed
+feedparser
+nltk
+requests
+numpy
+
+beautifulsoup4
+
+# arize-phoenix

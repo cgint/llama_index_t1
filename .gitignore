@@ -1,2 +1,9 @@
 data
 data_root_nltk
+venv
+AY_balance_sheet.csv
+AY_financials.csv
+AY_history.csv
+AY_incomestmt.csv
+AY_ticker.csv
+AY.json

@@ -1,0 +1,181 @@
+
+
+
+# """### Example of Graph RAG Chat Engine
+
+# #### The context mode
+# """
+# context = "Context mode"
+# print("====================================")
+# print(f"     {context}")
+# print("====================================")
+
+# from llama_index.memory import ChatMemoryBuffer
+
+# chat_engine = kg_index.as_chat_engine(
+#     chat_mode="context",
+#     memory=ChatMemoryBuffer.from_defaults(token_limit=6000),
+#     verbose=be_verbose
+# )
+
+# questions_data.append(engine_chat_to_context_question_answer(chat_engine, context, "Who is Rocket?"))
+# questions_data.append(engine_chat_to_context_question_answer(chat_engine, context, "Who is Lylla?"))
+# questions_data.append(engine_chat_to_context_question_answer(chat_engine, context, "Who is Groot?"))
+# questions_data.append(engine_chat_to_context_question_answer(chat_engine, context, "do they all know each other?"))
+# questions_data.append(engine_chat_to_context_question_answer(chat_engine, context, "But how about Lylla?"))
+# questions_data.append(engine_chat_to_context_question_answer(chat_engine, context, "Who of them are human?"))
+
+
+# """Above chat_engine won't eval the "them" when doing RAG, this could be resolved with ReAct mode!
+
+# We can see, now the agent will refine the question towards RAG before the retrieval.
+
+# #### The ReAct mode
+# """
+# context = "ReAct mode"
+# print("====================================")
+# print(f"     {context}")
+# print("====================================")
+
+# chat_engine = kg_index.as_chat_engine(
+#     chat_mode="react",
+#     memory=ChatMemoryBuffer.from_defaults(token_limit=6000),
+#     verbose=be_verbose
+# )
+# questions_data.append(engine_chat_to_context_question_answer(chat_engine, context, "Who is Rocket?"))
+# questions_data.append(engine_chat_to_context_question_answer(chat_engine, context, "Who is Lylla?"))
+# questions_data.append(engine_chat_to_context_question_answer(chat_engine, context, "Who is Groot?"))
+# questions_data.append(engine_chat_to_context_question_answer(chat_engine, context, "do they all know each other?"))
+# questions_data.append(engine_chat_to_context_question_answer(chat_engine, context, "But how about Lylla?"))
+# questions_data.append(engine_chat_to_context_question_answer(chat_engine, context, "Who of them are human?"))
+
+# store_data(questions_data, questions_data_out_file)
+
+# """Refs:
+# - https://blog.streamlit.io/build-a-chatbot-with-custom-data-sources-powered-by-llamaindex/
+# - https://github.com/wey-gu/demo-kg-build/blob/main/graph_rag_chatbot.py
+# - https://llamaindex-chat-with-docs.streamlit.app/
+# """
+
+# from IPython.display import HTML
+
+# HTML("""
+# <iframe src="https://player.vimeo.com/video/857919385?badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" width="1080" height="525" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" title="chat_graph_rag_demo"></iframe>
+# """)
+
+# """### Graph RAG with Text2Cypher"""
+# #
+# # The following would only make sense when we could set with_graphquery=True, which is not possible with SimpleStorage. But waas possible with NebulaGraph.
+# #
+# # graph_rag_retriever_with_graphquery = KnowledgeGraphRAGRetriever(
+# #     storage_context=storage_context,
+# #     service_context=service_context,
+# #     llm=llm,
+# #     verbose=be_verbose,
+# #     with_graphquery=False, # otherwise not possible with SimpleStorage
+# # )
+
+# # query_engine_with_graphquery = RetrieverQueryEngine.from_args(
+# #     graph_rag_retriever_with_graphquery, service_context=service_context
+# # )
+
+# # response = query_engine_with_graphquery.query("Tell me about Rocket?")
+
+# # display_output_bold(response)
+
+# """### Combining Graph RAG and Vector Index
+
+# REF: https://gpt-index.readthedocs.io/en/stable/examples/index_structs/knowledge_graph/KnowledgeGraphIndex_vs_VectorStoreIndex_vs_CustomIndex_combined.html
+
+# ```
+#                   ┌────┬────┬────┬────┐                  
+#                   │ 1  │ 2  │ 3  │ 4  │                  
+#                   ├────┴────┴────┴────┤                  
+#                   │  Docs/Knowledge   │                  
+# ┌───────┐         │        ...        │       ┌─────────┐
+# │       │         ├────┬────┬────┬────┤       │         │
+# │       │         │ 95 │ 96 │    │    │       │         │
+# │       │         └────┴────┴────┴────┘       │         │
+# │ User  │─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─▶   LLM   │
+# │       │                                     │         │
+# └───────┘  ┌ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┐  └─────────┘
+#     │          ┌──────────────────────────┐        ▲     
+#     └──────┼──▶│  Tell me ....., please   │├───────┘     
+#                └──────────────────────────┘              
+#            │┌────┐ ┌────┐                  │             
+#             │ 3  │ │ 96 │ x->y, x<-z->b,..               
+#            │└────┘ └────┘                  │             
+#             ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+# ```
+
+# #### Vector Index creation
+# """
+
+
+# vector_rag_query_engine = vector_index.as_query_engine()
+
+# """## "Cherry-picked" Examples that KG helps
+
+# ### Top-K Retrieval, nature of information distribution and segmentation
+
+# See more from [here](https://siwei.io/graph-enabled-llama-index/kg_and_vector_RAG.html).
+
+# > Tell me events about NASA.
+
+# |        | VectorStore                                                  | Knowledge Graph + VectorStore                                | Knowledge Graph                                              |
+# | ------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+# | Answer | NASA scientists report evidence for the existence of a second Kuiper Belt,<br>which the New Horizons spacecraft could potentially visit during the late 2020s or early 2030s.<br>NASA is expected to release the first study on UAP in mid-2023.<br>NASA's Venus probe is scheduled to be launched and to arrive on Venus in October,<br>partly to search for signs of life on Venus.<br>NASA is expected to start the Vera Rubin Observatory, the Qitai Radio Telescope,<br>the European Spallation Source and the Jiangmen Underground Neutrino.<br>NASA scientists suggest that a space sunshade could be created by mining the lunar soil and<br> launching it towards the Sun to form a shield against global warming. | NASA announces future space telescope programs on May 21.<br>**NASA publishes images of debris disk on May 23. NASA discovers exoplanet LHS 475 b on May 25.**<br>NASA scientists present evidence for the existence of a second Kuiper Belt on May 29.<br>NASA confirms the start of the next El Niño on June 8.<br>NASA produces the first X-ray of a single atom on May 31.<br>NASA reports the first successful beaming of solar energy from space down to a receiver on the ground on June 1.<br>NASA scientists report evidence that Earth may have formed in just three million years on June 14.<br>NASA scientists report the presence of phosphates on Enceladus, moon of the planet Saturn, on June 14.<br>NASA's Venus probe is scheduled to be launched and to arrive on Venus in October.<br>NASA's MBR Explorer is announced by the United Arab Emirates Space Agency on May 29.<br>NASA's Vera Rubin Observatory is expected to start in 2023. | NASA announced future space telescope programs in mid-2023,<br>**published images of a debris disk**, <br>and discovered an exoplanet called **LHS 475 b**. |
+# | Cost   | 1897 tokens                                                  | 2046 Tokens                                                  | 159 Tokens                                                   |
+
+
+
+# And we could see there are indeed some knowledges added with the help of Knowledge Graph retriever:
+
+# - NASA publishes images of debris disk on May 23.
+# - NASA discovers exoplanet LHS 475 b on May 25.
+
+# The additional cost, however, does not seem to be very significant, at `7.28%`: `(2046-1897)/2046`.
+
+# Furthermore, the answer from the knwoledge graph is extremely concise (only 159 tokens used!), but is still informative.
+
+# > Takeaway: KG gets Fine-grained Segmentation of info. with the nature of interconnection/global-context-retained, it helps when retriving spread yet important knowledge pieces.
+
+# ### Hallucination due to w/ relationship in literal/common sense, but should not be connected in domain Knowledge
+
+# [GPT-4 (WebPilot) helped me](https://shareg.pt/4zbGI5G) construct this question:
+
+# > during their mission on Counter-Earth, the Guardians encounter a mysterious artifact known as the 'Celestial Compass', said to be a relic from Star-Lord's Celestial lineage. Who among the Guardians was tempted to use its power for personal gain?
+
+# where, the correlation between knowledge/documents were setup in "common sence", while, they shouldn't be linked as in domain knowledge.
+
+# See this picture, they could be considered related w/o knowing they shouldn't be categorized together in the sense of e-commerce.
+
+# > Insulated Greenhouse v.s. Insulated Cup
+# <div style="display: flex; justify-content: space-between;">
+#     <img src="https://github.com/siwei-io/talks/assets/1651790/81ff9a61-c961-47c1-80fb-8e5bd9c957bc" alt="104946561_0_final" width="45%">
+#     <img src="https://github.com/siwei-io/talks/assets/1651790/e587d229-3973-4a3a-856e-0b493ad690eb" alt="104946743_0_final" width="45%">
+# </div>
+
+# > Takeaway: KG reasons things reasonably, as it holds the domain knowledge.
+# """
+# context = "Takeaway Vector Index"
+# questions_data.append(engine_query_to_context_question_answer(vector_rag_query_engine, context,
+# """
+# during their mission on Counter-Earth, the Guardians encounter a mysterious artifact known as the 'Celestial Compass', said to be a relic from Star-Lord's Celestial lineage. Who among the Guardians was tempted to use its power for personal gain?
+# """
+# ))
+
+# context = "Takeaway KG Index"
+# questions_data.append(engine_query_to_context_question_answer(kg_index_query_engine, context,
+# """
+# during their mission on Counter-Earth, the Guardians encounter a mysterious artifact known as the 'Celestial Compass', said to be a relic from Star-Lord's Celestial lineage. Who among the Guardians was tempted to use its power for personal gain?
+# """
+# ))
+
+# store_data(questions_data, questions_data_out_file)
+
+# # backup runtime contexts
+# #!zip -r workshop_dump.zip openrc storage_graph storage_vector
+
+# # restore runtime contexts
+# #!unzip workshop_dump.zip
