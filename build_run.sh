@@ -30,5 +30,6 @@ dbuild.sh -t $IMAGE_NAME . && time docker run -it --rm \
     -e CONF_MODEL="$MODEL" \
     -e CONF_AI_MODEL="$AI_MODEL" \
     -e CONF_IDENT="$IDENT" \
-
+    $IMAGE_NAME
+    
 sudo chown `whoami` data/*
