@@ -3,7 +3,7 @@ from typing import List
 from llama_index import Document, KnowledgeGraphIndex, StorageContext, load_index_from_storage
 import os
 from pyvis.network import Network
-from llama_index.graph_stores import SimpleGraphStore
+from llama_index.graph_stores import SimpleGraphStore, Neo4jGraphStore
 
 def create_graph(service_context, graph_storage_dir: str, graph_output_file: str, doc_loader: callable) -> List[Document]:
     if not os.path.exists(graph_storage_dir):
@@ -11,6 +11,7 @@ def create_graph(service_context, graph_storage_dir: str, graph_output_file: str
         print(f"About to build graph-index over {len(documents)} document(s) ...")
         build_start = time.time()        
         graph_store = SimpleGraphStore()
+        #graph_store = Neo4jGraphStore(url="neo4j://192.168.0.99:7687", database="neo4j", username="neo4j", password="cgintcgint")
         storage_context = StorageContext.from_defaults(graph_store=graph_store)
         kg_index = KnowledgeGraphIndex.from_documents(
             documents,

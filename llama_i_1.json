@@ -1,0 +1,60 @@
+{"_type": "ptag", "name": "JSON_OUTPUT_VERSION", "path": "0.0", "pattern": "in development"}
+{"_type": "ptag", "name": "TAG_FILE_SORTED", "path": "1", "pattern": "0=unsorted, 1=sorted, 2=foldcase"}
+{"_type": "ptag", "name": "TAG_OUTPUT_EXCMD", "path": "mixed", "pattern": "number, pattern, mixed, or combineV2"}
+{"_type": "ptag", "name": "TAG_OUTPUT_FILESEP", "path": "slash", "pattern": "slash or backslash"}
+{"_type": "ptag", "name": "TAG_PATTERN_LENGTH_LIMIT", "path": "96", "pattern": "0 for no limit"}
+{"_type": "ptag", "name": "TAG_PROC_CWD", "path": "/home/cgint/dev/AI/llama_index_t1/", "pattern": ""}
+{"_type": "ptag", "name": "TAG_PROGRAM_AUTHOR", "path": "Universal Ctags Team", "pattern": ""}
+{"_type": "ptag", "name": "TAG_PROGRAM_NAME", "path": "Universal Ctags", "pattern": "Derived from Exuberant Ctags"}
+{"_type": "ptag", "name": "TAG_PROGRAM_URL", "path": "https://ctags.io/", "pattern": "official site"}
+{"_type": "ptag", "name": "TAG_PROGRAM_VERSION", "path": "5.9.0", "pattern": ""}
+{"_type": "tag", "name": "_engine_chat_print", "path": "lib/engine_query.py", "pattern": "/^def _engine_chat_print(chat_engine, question):$/", "kind": "function"}
+{"_type": "tag", "name": "_engine_query_print", "path": "lib/engine_query.py", "pattern": "/^def _engine_query_print(query_engine, question):$/", "kind": "function"}
+{"_type": "tag", "name": "_engine_to_context_question_answer", "path": "lib/engine_query.py", "pattern": "/^def _engine_to_context_question_answer(query_engine, type, context, question):$/", "kind": "function"}
+{"_type": "tag", "name": "_process_queries_with_engine", "path": "lib/engine_query.py", "pattern": "/^def _process_queries_with_engine(engine, type, context, queries):$/", "kind": "function"}
+{"_type": "tag", "name": "_store_documents", "path": "lib/loader.py", "pattern": "/^def _store_documents(documents, store_path):$/", "kind": "function"}
+{"_type": "tag", "name": "be_verbose", "path": "llamaindex_simple_graph_rag.py", "pattern": "/^be_verbose = True$/", "kind": "variable"}
+{"_type": "tag", "name": "create_graph", "path": "lib/graph.py", "pattern": "/^def create_graph(service_context, graph_storage_dir: str, graph_output_file: str, doc_loader: ca/", "typeref": "typename:List[Document]", "kind": "function"}
+{"_type": "tag", "name": "create_vector", "path": "lib/vector.py", "pattern": "/^def create_vector(service_context, vector_storage_dir: str, doc_loader: callable) -> List[Docume/", "typeref": "typename:List[Document]", "kind": "function"}
+{"_type": "tag", "name": "df", "path": "lib/test.py", "pattern": "/^df = pd.read_json(nice_json)$/", "kind": "variable"}
+{"_type": "tag", "name": "df", "path": "lib/test.py", "pattern": "/^df = ticker_reader.get_balance_sheet()$/", "kind": "variable"}
+{"_type": "tag", "name": "df", "path": "lib/test.py", "pattern": "/^df = ticker_reader.get_financials()$/", "kind": "variable"}
+{"_type": "tag", "name": "df", "path": "lib/test.py", "pattern": "/^df = ticker_reader.get_incomestmt()$/", "kind": "variable"}
+{"_type": "tag", "name": "doc_loader", "path": "lib/rag_process.py", "pattern": "/^    doc_loader = lambda: load_documents_from_files_in_zipfile(\"\\/data\\/llama_index_t1_base.zip\",/", "file": true, "kind": "function", "scope": "run_for_config", "scopeKind": "function"}
+{"_type": "tag", "name": "dt", "path": "lib/loader.py", "pattern": "/^  import datetime as dt$/", "file": true, "kind": "namespace", "scope": "fetch_rss_feed", "scopeKind": "function", "nameref": "module:datetime"}
+{"_type": "tag", "name": "embed_model_name", "path": "llamaindex_simple_graph_rag.py", "pattern": "/^embed_model_name = os.getenv(\"CONF_EMBED_MODEL\", \"sentence-transformers\\/all-MiniLM-L6-v2\") # \"B/", "kind": "variable"}
+{"_type": "tag", "name": "engine_chat_to_context_question_answer", "path": "lib/engine_query.py", "pattern": "/^def engine_chat_to_context_question_answer(query_engine, context, question):$/", "kind": "function"}
+{"_type": "tag", "name": "fetch_html_content", "path": "lib/loader.py", "pattern": "/^def fetch_html_content(link):$/", "kind": "function"}
+{"_type": "tag", "name": "fetch_rss_feed", "path": "lib/loader.py", "pattern": "/^def fetch_rss_feed(stocks, url_pattern, with_content=False, with_sentiment=False):$/", "kind": "function"}
+{"_type": "tag", "name": "get_llm", "path": "lib/llm.py", "pattern": "/^def get_llm(llm_engine, llm_model, openai_model):$/", "kind": "function"}
+{"_type": "tag", "name": "hist", "path": "lib/test.py", "pattern": "/^hist = ticker_reader.history(period=\"3mo\")$/", "kind": "variable"}
+{"_type": "tag", "name": "init_rag_process", "path": "lib/rag_process.py", "pattern": "/^def init_rag_process():$/", "kind": "function"}
+{"_type": "tag", "name": "llm_engine", "path": "llamaindex_simple_graph_rag.py", "pattern": "/^llm_engine = os.getenv(\"CONF_TYPE\", \"ollama\") # \"together\" # \"openai\" # $/", "kind": "variable"}
+{"_type": "tag", "name": "llm_models", "path": "llamaindex_simple_graph_rag.py", "pattern": "/^llm_models = os.getenv(\"CONF_MODEL\", \"codeup\").split(\",\") # [\"zephyr:7b-beta-fp16\"] # [\"llama-pr/", "kind": "variable"}
+{"_type": "tag", "name": "load_documents", "path": "lib/loader.py", "pattern": "/^def load_documents(urls, urlPostfix, store_path):$/", "kind": "function"}
+{"_type": "tag", "name": "load_documents_file_cache_dir", "path": "lib/loader.py", "pattern": "/^load_documents_file_cache_dir = \"\\/data\\/load_documents-\"$/", "kind": "variable"}
+{"_type": "tag", "name": "load_documents_from_files_in_zipfile", "path": "lib/loader.py", "pattern": "/^def load_documents_from_files_in_zipfile(zipfile_path, store_path):$/", "kind": "function"}
+{"_type": "tag", "name": "load_documents_stocknews", "path": "lib/loader.py", "pattern": "/^def load_documents_stocknews(stocks, store_path):$/", "kind": "function"}
+{"_type": "tag", "name": "load_documents_wikipedia", "path": "lib/loader.py", "pattern": "/^def load_documents_wikipedia(pages, store_path):$/", "kind": "function"}
+{"_type": "tag", "name": "nice_json", "path": "lib/test.py", "pattern": "/^nice_json = json.dumps(ticker_reader.info, indent=4)$/", "kind": "variable"}
+{"_type": "tag", "name": "openai_model", "path": "llamaindex_simple_graph_rag.py", "pattern": "/^openai_model = os.getenv(\"CONF_AI_MODEL\", \"ignore\" ) # \"mistralai\\/Mistral-7B-Instruct-v0.2\" # \"/", "kind": "variable"}
+{"_type": "tag", "name": "pages_wikipedia_pixel", "path": "lib/rag_process.py", "pattern": "/^pages_wikipedia_pixel = [$/", "kind": "variable"}
+{"_type": "tag", "name": "pd", "path": "lib/question_store.py", "pattern": "/^import pandas as pd$/", "kind": "namespace", "nameref": "module:pandas"}
+{"_type": "tag", "name": "pd", "path": "lib/test.py", "pattern": "/^import pandas as pd$/", "kind": "namespace", "nameref": "module:pandas"}
+{"_type": "tag", "name": "process_queries_with_chat_engine", "path": "lib/engine_query.py", "pattern": "/^def process_queries_with_chat_engine(engine, context, queries):$/", "kind": "function"}
+{"_type": "tag", "name": "process_queries_with_query_engine", "path": "lib/engine_query.py", "pattern": "/^def process_queries_with_query_engine(engine, context, queries):$/", "kind": "function"}
+{"_type": "tag", "name": "request_headers", "path": "lib/loader.py", "pattern": "/^request_headers = {$/", "kind": "variable"}
+{"_type": "tag", "name": "run_for_config", "path": "lib/rag_process.py", "pattern": "/^def run_for_config(embed_model_name, llm_engine, llm_model, openai_model, run_identifier, be_ver/", "kind": "function"}
+{"_type": "tag", "name": "run_identifier", "path": "llamaindex_simple_graph_rag.py", "pattern": "/^    run_identifier = f\"{llm_model}_{run_scenario}\"$/", "kind": "variable"}
+{"_type": "tag", "name": "run_scenario", "path": "llamaindex_simple_graph_rag.py", "pattern": "/^run_scenario = os.getenv(\"CONF_IDENT\", \"AY-yahoo-content-no_sentiment-40\") # \"chap-per-meldung\"$/", "kind": "variable"}
+{"_type": "tag", "name": "stocknews_stocks", "path": "lib/rag_process.py", "pattern": "/^stocknews_stocks = [$/", "kind": "variable"}
+{"_type": "tag", "name": "store_data", "path": "lib/question_store.py", "pattern": "/^def store_data(questions_data, questions_data_out_file):$/", "kind": "function"}
+{"_type": "tag", "name": "the_queries_mostbauer", "path": "lib/rag_process.py", "pattern": "/^the_queries_mostbauer = [$/", "kind": "variable"}
+{"_type": "tag", "name": "the_queries_stocknews", "path": "lib/rag_process.py", "pattern": "/^the_queries_stocknews = [$/", "kind": "variable"}
+{"_type": "tag", "name": "the_queries_wikipedia_pixel", "path": "lib/rag_process.py", "pattern": "/^the_queries_wikipedia_pixel = [$/", "kind": "variable"}
+{"_type": "tag", "name": "the_queries_zipcode", "path": "lib/rag_process.py", "pattern": "/^the_queries_zipcode = [$/", "kind": "variable"}
+{"_type": "tag", "name": "ticker", "path": "lib/test.py", "pattern": "/^ticker = \"AY\"$/", "kind": "variable"}
+{"_type": "tag", "name": "ticker_reader", "path": "lib/test.py", "pattern": "/^ticker_reader = yf.Ticker(ticker)$/", "kind": "variable"}
+{"_type": "tag", "name": "urls_mostbauer", "path": "lib/rag_process.py", "pattern": "/^urls_mostbauer = [$/", "kind": "variable"}
+{"_type": "tag", "name": "write_dataframe_to_csv", "path": "lib/test.py", "pattern": "/^def write_dataframe_to_csv(filename, dataframe):$/", "kind": "function"}
+{"_type": "tag", "name": "yf", "path": "lib/test.py", "pattern": "/^import yfinance as yf$/", "kind": "namespace", "nameref": "module:yfinance"}
