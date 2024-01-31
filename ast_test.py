@@ -1,3 +1,11 @@
+"""
+Status: Draft
+This script is designed to analyze and report the method calls made within each function across multiple Python files.
+Its primary purpose is to provide an overview of how different functions interact with other parts of the code,
+specifically focusing on which methods are called within each function. 
+This analysis can be useful for understanding code structure, debugging, or for refactoring purposes.
+Essentially, it creates a map of method usage throughout the given Python files.
+"""
 import ast
 
 # Define the visitor class
