@@ -9,3 +9,4 @@ AY_ticker.csv
 AY.json
 neo4j_data
 neo4j_plugins
+*/__pycache__
