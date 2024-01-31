@@ -2,6 +2,13 @@
 First steps with llama index to use as graph/vector semantic search with reranking, sub-queries, ...
 
 # Main code
+
+## Intent
+The intent of this code is to provide a simple example of how to use the llama index to perform semantic search on a graph of documents.
+
+Most importantly it serves me as a playground to compare different models and approaches with each other through the overview written to CSV.
+
+## Infos
 Files are in `llamaindex_simple_graph_rag.py` and `lib/*`.
 
 This Python script is a driver for a system that processes data using language models. It uses environment variables for configuration, initializes a Retrieval-Augmented Generation (RAG) system, and runs a process for each specified language model.
