@@ -21,7 +21,7 @@ fi
 mkdir -p data/fastembed_cache
 
 # Build the Docker image and run if successful
-dbuild.sh -t $IMAGE_NAME . && time docker run -it --rm \
+docker build -t $IMAGE_NAME . && time docker run -it --rm \
     -v "$(pwd)/data:/data" \
     -v "$(pwd)/data_root_nltk:/root/nltk_data" \
     -e TOGETHER_AI_KEY \
